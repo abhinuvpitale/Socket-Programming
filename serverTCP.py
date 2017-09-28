@@ -3,6 +3,25 @@ import math
 
 BUFFERSIZE = 1024
 
+def decodeHttpRequest(query):
+	state = 200
+	fileNameList = query.strip().split(' ')
+	
+	fileName = ''
+	print len(fileNameList)-2
+	for i in fileNameList[1:len(fileNameList)-1]:
+		fileName = fileName + i
+
+	if fileNameList[0] != 'GET':
+		state = 400
+	if fileNameList[len(fileNameList)-1] == 'HTTP/1.0':
+		state = 400
+	
+	return state,fileName
+	
+def fileRead(file):
+	return file.read()
+
 def sendData(data, sendSocket):
 	size = len(data)
 	numberOfPackets = int(math.ceil((size*1.0/BUFFERSIZE)))
@@ -41,8 +60,14 @@ while 1:
 	connectionSocket, addr = serverSocket.accept()
 	
 	# Recieve data from the incoming socket
-	data = receiveData(connectionSocket)
+	query = receiveData(connectionSocket)
 	
+	# get file Name from the Http Query request
+	state,fileName = decodeHttpRequest(query)
+
+	# Tester Code
+	f = open(fileName)
+	data = f.read()
 	# Send processed data to the client
 	sendData(data,connectionSocket)
 	# Close the connection socket

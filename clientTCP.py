@@ -1,7 +1,11 @@
 from socket import *
 import math
 
-BUFFERSIZE = 1024
+BUFFERSIZE = 1024	
+
+def getHttpRequest(query):
+	query = 'GET '+ query + ' HTTP/1.0'
+	return query
 
 def sendData(data, sendSocket):
 	size = len(data)
@@ -37,10 +41,13 @@ clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName,serverPort))
 
 #input User Query
-sentence = raw_input('Input User Query :')
+query = raw_input('Input User Query :')
+
+#format the Query
+httpQuery = getHttpRequest(query)
 
 #send query via the Socket
-sendData(sentence,clientSocket)
+sendData(httpQuery,clientSocket)
 
 #get Response
 data = receiveData(clientSocket)
