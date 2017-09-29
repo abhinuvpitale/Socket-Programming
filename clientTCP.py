@@ -52,6 +52,7 @@ sendData(httpQuery,clientSocket)
 #get Response
 data = receiveData(clientSocket)
 #print Response
+print '\n'
 print data
 #close the Socket
 clientSocket.close()

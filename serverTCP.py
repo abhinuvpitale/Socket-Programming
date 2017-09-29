@@ -1,22 +1,36 @@
 from socket import *
 import math
+import os
 
 BUFFERSIZE = 1024
+
+def getHttpResponse(state,fileName):
+	if state == 400:
+		return 'HTTP/1.0 400 Bad Request'
+	else:
+		if state == 404:
+			return 'HTTP/1.0 404 Not Found'
+		else:
+			f = open(fileName)
+			data = f.read()
+			size = len(data)
+			return 'HTTP/1.0 200 OK \nContent-Length: '+str(size)+'\n\nContent: \n'+data
+
 
 def decodeHttpRequest(query):
 	state = 200
 	fileNameList = query.strip().split(' ')
 	
 	fileName = ''
-	print len(fileNameList)-2
 	for i in fileNameList[1:len(fileNameList)-1]:
 		fileName = fileName + i
 
 	if fileNameList[0] != 'GET':
 		state = 400
-	if fileNameList[len(fileNameList)-1] == 'HTTP/1.0':
+	if fileNameList[len(fileNameList)-1] != 'HTTP/1.0':
 		state = 400
-	
+	if (os.path.isfile(fileName) == False):
+		state = 404
 	return state,fileName
 	
 def fileRead(file):
@@ -65,9 +79,9 @@ while 1:
 	# get file Name from the Http Query request
 	state,fileName = decodeHttpRequest(query)
 
-	# Tester Code
-	f = open(fileName)
-	data = f.read()
+	#generate response
+	data = getHttpResponse(state,fileName)
+	
 	# Send processed data to the client
 	sendData(data,connectionSocket)
 	# Close the connection socket
