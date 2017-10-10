@@ -14,7 +14,7 @@ def getHttpResponse(state,fileName):
 			f = open(fileName,'rb')
 			data = f.read()
 			size = len(data)
-			return 'HTTP/1.0 200 OK\nContent-Length: '+str(size)+'\n\n'+data
+			return 'HTTP/1.0 200 OK\nContent-Length: '+str(size)+'\n\r'+data
 
 
 def decodeHttpRequest(query):

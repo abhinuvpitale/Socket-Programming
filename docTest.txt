@@ -1,7 +1,9 @@
-Hi!
-This is a random test file.
+Hi!
+This is a random test file.
+
+It has lots of spaces and blanks.
+
+
+I want to see how the server works
+
 
-It has lots of spaces and blanks.
-
-
-I want to see how the server works
