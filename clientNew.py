@@ -1,27 +1,24 @@
 from socket import *
 import math
 
-BUFFERSIZE = 10	
+BUFFERSIZE = 1024	
 
 def getHttpRequest(query):
-	query = 'GET '+ query + ' HTTP/1.0'
+	query = 'GET /'+ query + ' HTTP/1.0\n'
 	return query
 
-def sendData(data, sendSocket):
-	size = len(data)
-	numberOfPackets = int(math.ceil((size*1.0/BUFFERSIZE)))
-	sendSocket.send(str(numberOfPackets))
-	packetNumber = 0
-	while packetNumber < numberOfPackets:
-		sendSocket.send(data[BUFFERSIZE*packetNumber:BUFFERSIZE*(packetNumber+1)])
-		packetNumber = packetNumber + 1
+def sendData(data, sendSocket):	
+	sendSocket.send(data)
+		
 
 def receiveData(clientSocket):
-	n = int(clientSocket.recv(BUFFERSIZE))
-	data = ''
-	while n > 0:
-		data = data + clientSocket.recv(BUFFERSIZE)
-		n = n - 1
+	#n = int(clientSocket.recv(BUFFERSIZE))
+	temp = clientSocket.recv(BUFFERSIZE)
+	data = temp
+	while temp:
+		temp = clientSocket.recv(BUFFERSIZE)
+		data = data + temp
+		
 	return data
 	
 ################################# Start of main Program #################################
@@ -51,10 +48,8 @@ httpQuery = getHttpRequest(fileName)
 
 #send query via the Socket
 sendData(httpQuery,clientSocket)
-
 #get Response
 data = receiveData(clientSocket)
-
 #decode Response
 data = data.split('\n')
 state = int(data[0].split(' ')[1])
@@ -65,7 +60,7 @@ if state == 404:
 	print 'File Not Found!'
 if state == 200:
 	fileData = ''
-	for i in data[4:]:
+	for i in data[3:]:
 		fileData = fileData + i + '\n'
 
 	f = open(fileName,'w')

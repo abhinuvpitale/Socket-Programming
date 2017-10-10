@@ -2,7 +2,7 @@ from socket import *
 import math
 import os
 
-BUFFERSIZE = 1024
+BUFFERSIZE = 10
 
 def getHttpResponse(state,fileName):
 	if state == 400:
@@ -54,21 +54,20 @@ def receiveData(receiveSocket):
 		n = n - 1
 	return data
 
-
-#define Server port as 8794
-serverPort = 8794
-
+################################# Start of main Program #################################
+serverPort = int(raw_input('Enter Port Number to setup the server : '))
 # create a TCP socket
 serverSocket = socket(AF_INET,SOCK_STREAM)
 
 # bind the socket
 serverSocket.bind(('',serverPort))
 
+print 'Server started on port : ', serverPort
+
 # Wait for incoming sockets/requests
 serverSocket.listen(1)
 
-# Check if the server is working
-print 'Server Started on Port ',serverPort
+
 while 1:
 	# Accept the incoming socket and create a connection socket
 	connectionSocket, addr = serverSocket.accept()
